@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Daily Habits</title>
+<style>
+  :root{
+    --text:#242424;
+    --muted:#e9e7e3;
+    --border:#dedbd5;
+    --accent:#7f9d90;
+    --bg:#ffffff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:transparent;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--text);
+  }
+  .card{
+    width:100%;
+    max-width:320px;
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:22px 22px 20px;
+  }
+  h1{
+    margin:0 0 18px;
+    font-size:22px;
+    line-height:1.2;
+    font-weight:700;
+  }
+  .habit{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:12px 0;
+    font-size:17px;
+    line-height:1.25;
+    cursor:pointer;
+    user-select:none;
+  }
+  .habit input{
+    appearance:none;
+    width:22px;
+    height:22px;
+    border:2px solid #d8d5cf;
+    border-radius:6px;
+    margin:0;
+    display:grid;
+    place-content:center;
+    flex:0 0 auto;
+    background:white;
+    cursor:pointer;
+  }
+  .habit input:checked{
+    background:#78a092;
+    border-color:#78a092;
+  }
+  .habit input:checked::after{
+    content:"✓";
+    color:white;
+    font-size:15px;
+    font-weight:700;
+    line-height:1;
+  }
+  .emoji{width:24px;text-align:center}
+  .progress-wrap{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-top:20px;
+  }
+  .percent{
+    font-size:17px;
+    min-width:42px;
+  }
+  .track{
+    height:6px;
+    flex:1;
+    background:var(--muted);
+    border-radius:999px;
+    overflow:hidden;
+  }
+  .bar{
+    height:100%;
+    width:0%;
+    background:var(--accent);
+    border-radius:999px;
+    transition:width .22s ease;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Daily Habits</h1>
+
+    <label class="habit">
+      <input type="checkbox" data-key="yoga">
+      <span class="emoji">🧘</span>
+      <span>Yoga</span>
+    </label>
+
+    <label class="habit">
+      <input type="checkbox" data-key="read30">
+      <span class="emoji">📖</span>
+      <span>Read for 30 minutes</span>
+    </label>
+
+    <label class="habit">
+      <input type="checkbox" data-key="tidy">
+      <span class="emoji">🧺</span>
+      <span>Tidy room</span>
+    </label>
+
+    <label class="habit">
+      <input type="checkbox" data-key="sleep8">
+      <span class="emoji">💤</span>
+      <span>8 hour sleep</span>
+    </label>
+
+    <label class="habit">
+      <input type="checkbox" data-key="water2">
+      <span class="emoji">💧</span>
+      <span>2 bottles of water</span>
+    </label>
+
+    <div class="progress-wrap">
+      <div class="percent" id="percent">0%</div>
+      <div class="track"><div class="bar" id="bar"></div></div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const STORAGE_KEY = "dailyHabitsWidget";
+  const boxes = [...document.querySelectorAll('input[type="checkbox"]')];
+  const percent = document.getElementById("percent");
+  const bar = document.getElementById("bar");
+
+  const localDate = () => {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    const day = String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${day}`;
+  };
+
+  function load(){
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch(e) {}
+    if(saved.date !== localDate()){
+      saved = {date: localDate(), habits:{}};
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+    }
+    boxes.forEach(b => b.checked = !!saved.habits?.[b.dataset.key]);
+    updateProgress();
+  }
+
+  function save(){
+    const habits = {};
+    boxes.forEach(b => habits[b.dataset.key] = b.checked);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({date:localDate(), habits}));
+    updateProgress();
+  }
+
+  function updateProgress(){
+    const done = boxes.filter(b => b.checked).length;
+    const pct = Math.round((done / boxes.length) * 100);
+    percent.textContent = pct + "%";
+    bar.style.width = pct + "%";
+  }
+
+  boxes.forEach(b => b.addEventListener("change", save));
+  load();
+
+  // Handles the widget staying open across midnight.
+  setInterval(() => {
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch(e) {}
+    if(saved.date !== localDate()) load();
+  }, 60000);
+})();
+</script>
+</body>
+</html>
