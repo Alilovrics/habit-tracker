@@ -3,13 +3,15 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Daily Habits</title>
+<title>habits</title>
 <style>
   :root{
     --text:#242424;
-    --muted:#e9e7e3;
+    /* Track sits darker than the fill, since the accent is now a pale cream. */
+    --muted:#dcd6cd;
     --border:#dedbd5;
-    --accent:#7f9d90;
+    --accent:#ede9e4;
+    --accent-edge:#c7bfb3;
     --bg:#ffffff;
   }
   *{box-sizing:border-box}
@@ -26,6 +28,7 @@
     border:1px solid var(--border);
     border-radius:18px;
     padding:22px 22px 20px;
+    text-transform:lowercase;
   }
   h1{
     margin:0 0 18px;
@@ -57,12 +60,12 @@
     cursor:pointer;
   }
   .habit input:checked{
-    background:#78a092;
-    border-color:#78a092;
+    background:var(--accent);
+    border-color:var(--accent-edge);
   }
   .habit input:checked::after{
     content:"✓";
-    color:white;
+    color:var(--text);
     font-size:15px;
     font-weight:700;
     line-height:1;
@@ -102,35 +105,35 @@
 </head>
 <body>
   <div class="card">
-    <h1>Daily Habits</h1>
+    <h1>habits</h1>
 
     <label class="habit">
       <input type="checkbox" data-key="yoga">
-      <span class="emoji">🧘</span>
-      <span>Yoga</span>
+      <span class="emoji">🧘🏼‍♀️</span>
+      <span>yoga</span>
     </label>
 
     <label class="habit">
       <input type="checkbox" data-key="read30">
-      <span class="emoji">📖</span>
-      <span>Read for 30 minutes</span>
+      <span class="emoji">📔</span>
+      <span>read (30mins)</span>
     </label>
 
     <label class="habit">
       <input type="checkbox" data-key="tidy">
       <span class="emoji">🧺</span>
-      <span>Tidy room</span>
+      <span>tidy up</span>
     </label>
 
     <label class="habit">
       <input type="checkbox" data-key="sleep8">
-      <span class="emoji">💤</span>
-      <span>8 hour sleep</span>
+      <span class="emoji">🧸</span>
+      <span>8 hrs of sleep</span>
     </label>
 
     <label class="habit">
       <input type="checkbox" data-key="water2">
-      <span class="emoji">💧</span>
+      <span class="emoji">🍉</span>
       <span>2 bottles of water</span>
     </label>
 
